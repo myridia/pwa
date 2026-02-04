@@ -93,9 +93,9 @@ addEventListener("message", (event) => {
 });
 
 async function message(event) {
-  console.log("...got message from App ");
-  console.log(event.data);
+  //console.log("...got message from App ");
+  //console.log(event.data);
   const client = await self.clients.get(event.source.id);
-
-  client.postMessage({ msg: "Hello from SW!" });
+  const response = event.data.split("").reverse().join("");
+  client.postMessage({ msg: response });
 }

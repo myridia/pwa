@@ -5,17 +5,15 @@ let install_button = document.querySelector(".install_app");
 window.onload = async function () {
   var registration = await register_sw();
   const button = document.querySelector("#send_message_button");
-  console.log(button);
   if (button) {
     button.addEventListener("click", (event) => {
-      log.info("...button send_message clicked");
-      log.info("...send message to SW");
-      registration.active.postMessage("Hello from App");
+      const message = document.querySelector("#message_textarea").value;
+      log.info("...App: " + message);
+      registration.active.postMessage(message);
     });
   }
-
   navigator.serviceWorker.addEventListener("message", (event) => {
-    log.info("...received message from SW: " + event.data.msg);
+    log.info("...SW: " + event.data.msg);
   });
 };
 
