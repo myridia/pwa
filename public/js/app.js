@@ -1,4 +1,4 @@
-var log = new Log2textarea("logger", "...loading PSI");
+var log = new Log2textarea("logger");
 let install_prompt = null;
 let install_button = document.querySelector(".install_app");
 
