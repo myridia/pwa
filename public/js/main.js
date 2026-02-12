@@ -42,6 +42,7 @@ const register_sw = async () => {
         window.addEventListener("beforeinstallprompt", (event) => {
           log.info("...pwa can be installed!");
           event.preventDefault();
+
           install_prompt = event;
           install_button.classList.remove("is-hidden");
           install_button.addEventListener("click", () => {
@@ -55,6 +56,7 @@ const register_sw = async () => {
                 log.info("User dismissed the A2HS install app prompt");
               }
               install_prompt = null;
+              install_button.classList.add("is-hidden");
             });
           });
         });

@@ -6,7 +6,7 @@ const assets = [
   "./index.html",
   "./favicon.png",
   "./js/log2textarea.js",
-  "./js/app.js",
+  "./js/main.js",
   "./sqlite3.js",
   "./sqlite3.wasm",
   "./css/pico.css",
@@ -51,7 +51,7 @@ self.addEventListener("activate", function (event) {
   return self.clients.claim();
 });
 
-self.addEventListener("fetch", (e) => {});
+//self.addEventListener("fetch", (e) => {});
 
 self.addEventListener("sync", (e) => {
   if (e.tag === "sync-posts") {
@@ -93,7 +93,7 @@ self.addEventListener("notificationclick", (event) => {
   event.waitUntil(clients.openWindow(event.notification.data.url));
 });
 
-addEventListener("message", (event) => {
+self.addEventListener("message", (event) => {
   message(event);
 });
 
@@ -108,11 +108,10 @@ async function message(event) {
   client.postMessage({ msg: response });
 }
 
-let db;
 async function initDB() {
   console.log("...start slqite3");
   self.sqlite3InitModule().then((sqlite3) => {
-    //    console.log(sqlite3);
+    console.log(sqlite3.version);
 
     if ("opfs" in sqlite3) {
       db = new sqlite3.oo1.OpfsDb("hello_pwa.db");
@@ -128,16 +127,16 @@ async function initDB() {
       );
     }
 
-    db.exec(`CREATE TABLE IF NOT EXISTS personas(
+    db.exec(`CREATE TABLE IF NOT EXISTS people(
 				id INTEGER PRIMARY KEY AUTOINCREMENT,
-				nombre TEXT NOT NULL,
-				fechaNacimiento TEXT NOT NULL)`);
+				name TEXT NOT NULL,
+				age TEXT NOT NULL)`);
   });
 }
 
 const insertarPersona = async (nombre, fechaNacimiento) => {
   const filas = await db.exec({
-    sql: "INSERT INTO personas(nombre, fechaNacimiento) VALUES (?, ?) RETURNING *",
+    sql: "INSERT INTO people(name, age) VALUES (?, ?) RETURNING *",
     bind: [nombre, fechaNacimiento],
     returnValue: "resultRows",
     rowMode: "object",
@@ -146,7 +145,7 @@ const insertarPersona = async (nombre, fechaNacimiento) => {
 };
 const obtenerPersonas = async () => {
   return await db.exec({
-    sql: "SELECT id, nombre, fechaNacimiento FROM personas",
+    sql: "SELECT id, name, age FROM people",
     returnValue: "resultRows",
     rowMode: "object",
   });
