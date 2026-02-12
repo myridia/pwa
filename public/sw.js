@@ -1,16 +1,20 @@
 const app_name = "hello_pwa";
+importScripts("sqlite3.js");
 
 const assets = [
   "./",
   "./index.html",
   "./favicon.png",
-  "./js/app.js",
+  "./js/log2textarea.js",
+  "./js/main.js",
+  "./sqlite3.js",
+  "./sqlite3.wasm",
+  "./css/pico.css",
   "./css/app.css",
-  "./img/spelltrainer_icon.png",
-  "./img/spelltrainer_landing.png",
-  "./img/spelltrainer_logo.png",
+  "./img/icon.png",
+  "./img/landing.png",
+  "./img/logo.png",
   "./img/screenshot.png",
-  "./node_modules/log2textarea/dist/log2textarea.js",
 ];
 
 self.addEventListener("install", (installEvent) => {
@@ -30,6 +34,7 @@ self.addEventListener("install", (installEvent) => {
 
 self.addEventListener("activate", function (event) {
   //console.log('[Service Worker] Activating Service Worker ....', event);
+
   event.waitUntil(
     caches.keys().then(function (keyList) {
       return Promise.all(
@@ -42,10 +47,11 @@ self.addEventListener("activate", function (event) {
       );
     }),
   );
+  event.waitUntil(initDB());
   return self.clients.claim();
 });
 
-self.addEventListener("fetch", (e) => {});
+//self.addEventListener("fetch", (e) => {});
 
 self.addEventListener("sync", (e) => {
   if (e.tag === "sync-posts") {
@@ -87,14 +93,60 @@ self.addEventListener("notificationclick", (event) => {
   event.waitUntil(clients.openWindow(event.notification.data.url));
 });
 
-addEventListener("message", (event) => {
+self.addEventListener("message", (event) => {
   message(event);
 });
 
 async function message(event) {
-  console.log("...got message from App ");
-  console.log(event.data);
+  //console.log("...got message from App ");
+  //console.log(event.data);
   const client = await self.clients.get(event.source.id);
-
-  client.postMessage({ msg: "Hello from SW!" });
+  const response = event.data.split("").reverse().join("");
+  await insertarPersona(event.data, "12");
+  const personas = await obtenerPersonas();
+  console.log(personas);
+  client.postMessage({ msg: response });
 }
+
+async function initDB() {
+  console.log("...start slqite3");
+  self.sqlite3InitModule().then((sqlite3) => {
+    console.log(sqlite3.version);
+
+    if ("opfs" in sqlite3) {
+      db = new sqlite3.oo1.OpfsDb("hello_pwa.db");
+      console.log(
+        "OPFS is available, created persisted database at",
+        db.filename,
+      );
+    } else {
+      db = new sqlite3.oo1.DB("hello_pwa.db", "ct");
+      console.log(
+        "OPFS is not available, created transient database",
+        db.filename,
+      );
+    }
+
+    db.exec(`CREATE TABLE IF NOT EXISTS people(
+				id INTEGER PRIMARY KEY AUTOINCREMENT,
+				name TEXT NOT NULL,
+				age TEXT NOT NULL)`);
+  });
+}
+
+const insertarPersona = async (nombre, fechaNacimiento) => {
+  const filas = await db.exec({
+    sql: "INSERT INTO people(name, age) VALUES (?, ?) RETURNING *",
+    bind: [nombre, fechaNacimiento],
+    returnValue: "resultRows",
+    rowMode: "object",
+  });
+  return filas[0];
+};
+const obtenerPersonas = async () => {
+  return await db.exec({
+    sql: "SELECT id, name, age FROM people",
+    returnValue: "resultRows",
+    rowMode: "object",
+  });
+};

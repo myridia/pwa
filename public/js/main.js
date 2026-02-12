@@ -1,20 +1,19 @@
-var log = new Log2textarea("logger", "...loading PSI");
+var log = new Log2textarea("logger");
 let install_prompt = null;
 let install_button = document.querySelector(".install_app");
 
 window.onload = async function () {
   var registration = await register_sw();
-  const button = document.querySelector("#btn_contact_send");
+  const button = document.querySelector("#send_message_button");
   if (button) {
     button.addEventListener("click", (event) => {
-      log.info("...button clicked");
-      registration.active.postMessage("Hello from App");
+      const message = document.querySelector("#message_textarea").value;
+      log.info("...App: " + message);
+      registration.active.postMessage(message);
     });
   }
-
   navigator.serviceWorker.addEventListener("message", (event) => {
-    log.info("...got message from SW: ");
-    log.info(event.data.msg);
+    log.info("...SW: " + event.data.msg);
   });
 };
 
@@ -43,6 +42,7 @@ const register_sw = async () => {
         window.addEventListener("beforeinstallprompt", (event) => {
           log.info("...pwa can be installed!");
           event.preventDefault();
+
           install_prompt = event;
           install_button.classList.remove("is-hidden");
           install_button.addEventListener("click", () => {
@@ -56,6 +56,7 @@ const register_sw = async () => {
                 log.info("User dismissed the A2HS install app prompt");
               }
               install_prompt = null;
+              install_button.classList.add("is-hidden");
             });
           });
         });
@@ -67,3 +68,31 @@ const register_sw = async () => {
     }
   }
 };
+
+function isRunningStandalone() {
+  return (
+    window.matchMedia("(display-mode: standalone)").matches ||
+    ("standalone" in window.navigator && window.navigator.standalone)
+  );
+}
+
+function safari() {
+  if (!isRunningStandalone()) {
+    const prompt = document.createElement("div");
+    prompt.innerHTML = `
+    <p>Add this app to your home screen for easy access!</p>
+    <p>Tap the Share button <img src="share_icon.png" alt="Share Icon" width="20"> and then select "Add to Home Screen".</p>
+  `;
+    prompt.style.cssText = `
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #f0f0f0;
+    padding: 10px;
+    text-align: center;
+    z-index: 1000; /* Ensure it's on top */
+  `;
+    document.body.appendChild(prompt);
+  }
+}
