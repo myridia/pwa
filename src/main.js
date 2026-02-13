@@ -2,7 +2,6 @@ import { createApp } from "vue";
 import "@picocss/pico/css/pico.css";
 import "./css/app.css";
 import "./js/app.js";
-import "./manifest.webmanifest";
 import App from "./App.vue";
 //import './registerServiceWorker'
 
