@@ -1,4 +1,3 @@
-<!-- Header.vue -->
 <template>
 <header class="container-fluid is-fixed-above-lg">
   <nav>
@@ -12,24 +11,5 @@
     </ul>
   </nav>
 </header>
-   </template>
+</template>
 
-
-<style scoped>
-.fixed-header {
-  position: fixed;
-    top: 0;
-      left: 0;
-        right: 0;
-	  z-index: 1000;
-	    background: var(--pico-background-color);
-	      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-	        padding: 1rem 0;
-		}
-
-/* Adjust body padding to prevent content hiding under header */
-body {
-  padding-top: 70px; /* Adjust based on header height */
-  }
-  </style>
-  
