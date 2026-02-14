@@ -1,0 +1,10 @@
+header {
+    background-color:#333333;
+}
+
+
+header nav img {
+  height: var(--spacing); /* Pico's spacing variable */
+  width: auto;
+  height: 2.1rem;
+}
