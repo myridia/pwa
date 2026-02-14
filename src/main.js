@@ -1,20 +1,26 @@
 import { createApp } from "vue";
+import App from "./vue/App.vue";
 import "@picocss/pico/css/pico.css";
 import "./css/app.css";
 import "./js/app.js";
-import App from "./App.vue";
-//import './registerServiceWorker'
 
 const app = createApp(App);
 app.mount("#app");
 
 let install_prompt = null;
-let $install_button = document.querySelector(".install_app");
 let $install_pwa = document.querySelector("#install_pwa");
+let $refresh_pwa = document.querySelector("#refresh_pwa");
 
-const worker = new Worker(new URL("./db.js", import.meta.url), {
+let worker = new Worker(new URL("./db.js", import.meta.url), {
   type: "module",
 });
+
+$refresh_pwa.addEventListener("click", () => {
+  worker.unregister().then((boolean) => {
+    window.location.reload(true);
+  });
+});
+
 const $iniciarBaseDeDatos = document.querySelector("#btnIniciarBaseDeDatos"),
   $insertar = document.querySelector("#btnInsertar"),
   $obtener = document.querySelector("#btnObtener"),
