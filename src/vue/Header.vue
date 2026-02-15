@@ -3,7 +3,7 @@
   <nav>
     <ul>
       <li><img src="/img/logo.png" alt="logo"></li>      
-      <li><strong>PWA - My Notes</strong></li>
+      <li><strong>PWA</strong></li>
     </ul>
     <ul>
       <li><a href="index.html">Home</a></li>
