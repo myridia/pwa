@@ -13,12 +13,43 @@
   <button id="refresh_pwa">Refresh PWA</button>  
   <br>
   <br>  
-  <button id="btnIniciarBaseDeDatos">Iniciar base de datos</button>
-  <button disabled id="btnInsertar">Insertar persona</button>
-  <button disabled id="btnObtener">Obtener lista de personas</button>  
-  <input disabled value="Parzibyte" id="nombre" type="text" placeholder="Nombre">
-  <input disabled value="2050-01-01" id="fechaNacimiento" type="date">
-  <div id="contenedorPersonas"></div>
+<form>
+  <fieldset>
+    <label>
+      First name
+      <input
+        name="first_name"
+        placeholder="First name"
+        autocomplete="given-name"
+      />
+    </label>
+    <label>
+      Email
+      <input
+        type="email"
+        name="email"
+        placeholder="Email"
+        autocomplete="email"
+      />
+    </label>
+
+    <label>
+      Message
+      <textarea
+        name="message"
+        placeholder="Email"
+        aria-label="Message"
+      ></textarea>
+    </label>    
+  </fieldset>
+
+  <input
+    type="submit"
+    value="Send"
+  />
+</form>
+
+  
   <script type="module" src="/main.js"></script>  
 </body>
 </html>
