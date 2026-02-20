@@ -28,8 +28,9 @@ jobs:
          npm install 
          npm run build
          ls dist
-  
-    
+      - name: FTP upload
+        run: |
+           lftp -u ${{ secrets.FTP_USER }},${{ secrets.FTP_PASS }}  -e 'set ssl:verify-certificate false;mirror --reverse --delete --verbose=3 --only-newer --ignore-time  --exclude .git/ --exclude old --exclude logs --parallel=10  --use-pget-n=10  ./dist/ /pwa/' ${{ secrets.FTP_HOST }}
 
 
       
